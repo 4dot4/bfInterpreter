@@ -3,7 +3,7 @@
 
 
 void analyse(char* tokens,int len){
-    char array[30000];
+    u_int8_t array[30000];
     int ptr = 0;
     char input;
     int loopPos;
@@ -23,10 +23,10 @@ void analyse(char* tokens,int len){
             ptr--;
             break;
         case '+':
-            array[ptr]++;
+            array[ptr] + 1 > 255? array[ptr] = 0 : array[ptr]++;
             break;    
         case '-':
-            array[ptr]--;
+            array[ptr] - 1 < 0? array[ptr] = 255 : array[ptr]--;
             break;
         case '.':
             printf("%c",array[ptr]);
@@ -49,6 +49,11 @@ void analyse(char* tokens,int len){
         default:
             break;
         }
+        if (ptr > 29999 || ptr < 0 ){
+            printf("error: invalid ptr");
+            break;
+        }
+        
     }
     printf("\n");
 }
