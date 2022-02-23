@@ -2,12 +2,11 @@
 #include <stdlib.h>
 
 
-void analyse(char* tokens,int len){
-    u_int8_t array[30000];
+void analyse(char* tokens,int len,int loops[500][2],int lenLoops){
+    char array[30000];
     int ptr = 0;
     char input;
-    int loopPos;
-    int endloop;
+    int findPos;
     for(int i = 0;i < 30000;i++){
         array[i] = 0;
     }
@@ -35,15 +34,21 @@ void analyse(char* tokens,int len){
             scanf(" %c",&input);
             array[ptr] = input;
             break;
-        case '[':
-            loopPos = i;
-            if(array[ptr] == 0)
-                i = endloop;
+        case '['://0     
+            for(findPos = 0; findPos < lenLoops;findPos++){
+                if(i == loops[findPos][0])
+                   break;
+            }    
+                if(array[ptr] == 0)
+                    i = loops[findPos][1];
             
             break;
-        case ']':    
-            endloop = i;
-            i = loopPos - 1;
+        case ']'://1    
+            for(findPos = 0; findPos < lenLoops;findPos++){
+                if(i == loops[findPos][1])
+                   break;
+            }
+            i = loops[findPos][0] - 1;
             break;
           
         default:
@@ -73,14 +78,26 @@ int main(int argc, char** argv){
     }
     char ch;
     int pos = 0;
+    int loops[500][2];
+    int open = 0;
+    int close = 0;
+    int len = 0;
     while(ch != EOF){
         ch = fgetc(ptr);
         if(ch == '>'|| ch == '<'||ch == '+'||ch == '-'||
            ch == '.'||ch == ','||ch == '['|| ch == ']'){
-               tokens[pos++] = ch;
-           }
+                tokens[pos] = ch;
+                if(ch == '['){
+                    open++;
+                    loops[len++][0] = pos;
+                }else if(ch == ']'){
+                    close++;
+                    loops[open - close][1] = pos;
+                }
+               pos++;
+            }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
     } 
-    analyse(tokens,pos);
+    analyse(tokens,pos,loops,len);
     return 0;
 }
