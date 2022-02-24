@@ -3,29 +3,29 @@
 
 
 void analyse(char* tokens,int len,int loops[500][2],int lenLoops){
-    char array[30000];
+    unsigned char array[30000];
     int ptr = 0;
     char input;
     int findPos;
     for(int i = 0;i < 30000;i++){
         array[i] = 0;
     }
-    
+   
     for(int i = 0; i < len;i++){
         
         switch (tokens[i]){
          
         case '>':
-            ptr++;
+            ++ptr;
             break;
         case '<':
-            ptr--;
+            --ptr;
             break;
         case '+':
-            array[ptr] + 1 > 255? array[ptr] = 0 : array[ptr]++;
+            array[ptr] == 255 ? array[ptr] = 0 : array[ptr]++;  
             break;    
         case '-':
-            array[ptr] - 1 < 0? array[ptr] = 255 : array[ptr]--;
+            array[ptr] == 0 ? array[ptr] = 255 : array[ptr]--;
             break;
         case '.':
             printf("%c",array[ptr]);
@@ -39,8 +39,8 @@ void analyse(char* tokens,int len,int loops[500][2],int lenLoops){
                 if(i == loops[findPos][0])
                    break;
             }    
-                if(array[ptr] == 0)
-                    i = loops[findPos][1];
+            if(array[ptr] == 0)
+                i = loops[findPos][1];
             
             break;
         case ']'://1    
@@ -82,6 +82,7 @@ int main(int argc, char** argv){
     int open = 0;
     int close = 0;
     int len = 0;
+    int increase = 0;
     while(ch != EOF){
         ch = fgetc(ptr);
         if(ch == '>'|| ch == '<'||ch == '+'||ch == '-'||
@@ -92,7 +93,8 @@ int main(int argc, char** argv){
                     loops[len++][0] = pos;
                 }else if(ch == ']'){
                     close++;
-                    loops[open - close][1] = pos;
+                    loops[open - close + increase][1] = pos;
+                    open == close ? increase++ : 0;
                 }
                pos++;
             }
